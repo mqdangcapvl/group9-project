@@ -1,0 +1,5 @@
+1,French Fries,Snacks,5,50
+2,Chicken Wings,Snacks,8,40
+3,Burger,Main,12,30
+4,Coca Cola,Beverages,3,100
+5,Water,Beverages,2,120

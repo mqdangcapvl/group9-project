@@ -1,0 +1,16 @@
+1,VIP,100000,available,0
+2,VIP,100000,available,0
+3,VIP,100000,available,0
+4,VIP,100000,available,0
+5,VIP,100000,available,0
+6,VIP,100000,available,0
+7,NORMAL_A,50000,available,0
+8,NORMAL_A,50000,available,0
+9,NORMAL_A,50000,available,0
+10,NORMAL_A,50000,available,0
+11,NORMAL_A,50000,available,0
+12,NORMAL_B,30000,available,0
+13,NORMAL_B,30000,available,0
+14,NORMAL_B,30000,available,0
+15,NORMAL_B,30000,available,0
+16,NORMAL_B,30000,available,0
