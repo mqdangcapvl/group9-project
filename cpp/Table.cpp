@@ -103,8 +103,7 @@ Table::~Table() {
     totalTables--;
 }
 
-
-// ===== VIP TABLE =====
+// Vip
 
 VIPTable::VIPTable(
     int id,
@@ -120,8 +119,7 @@ VIPTable::VIPTable(
 
 {}
 
-
-// ===== NORMAL A =====
+// Normal A
 
 NormalTableA::NormalTableA(
     int id,
@@ -136,9 +134,7 @@ NormalTableA::NormalTableA(
   )
 
 {}
-
-
-// ===== NORMAL B =====
+// Normal B
 
 NormalTableB::NormalTableB(
     int id,

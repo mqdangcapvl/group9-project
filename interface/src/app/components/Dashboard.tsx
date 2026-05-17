@@ -99,41 +99,15 @@ export function Dashboard() {
     );
   }
 
-  const totalTables =
-    data.tables.length;
-
-  const occupiedTables =
-    data.tables.filter(
-      table => table.status === 'occupied'
-    ).length;
-
-  const vipTables =
-    data.tables.filter(
-      table => table.type === 'VIP'
-    );
-
-  const vipOccupied =
-    vipTables.filter(
-      table => table.status === 'occupied'
-    ).length;
-
-  const normalTables =
-    data.tables.filter(
-      table => table.type !== 'VIP'
-    );
-
-  const normalOccupied =
-    normalTables.filter(
-      table => table.status === 'occupied'
-    ).length;
-
-  const lowStockItems =
-    data.inventory.filter(
-      item => item.quantity <= item.minStock
-    );
-
-  const inventoryItems =
-    data.inventory.length;
+  const totalTables = data.tables.length;
+  const occupiedTables = data.tables.filter( table => table.status === 'occupied' ).length;
+  const vipTables = data.tables.filter( table => table.type === 'VIP' );
+  const vipOccupied = vipTables.filter( table => table.status === 'occupied' ).length;
+  const normalTables = data.tables.filter( table => table.type !== 'VIP');
+  const normalOccupied = normalTables.filter(table => table.status === 'occupied').length;
+  
+  const lowStockItems = data.inventory.filter(item => item.quantity <= item.minStock);
+  const inventoryItems = data.inventory.length;
 
   const recentActivities = [
     ...data.tables
@@ -180,7 +154,7 @@ export function Dashboard() {
         </div>
 
         <div
-          className={`w-12 h-12 rounded-lg flex items-center justify-center text-white ${color}`}
+          className={` ml-3 w-12 h-12 rounded-lg flex items-center justify-center text-white ${color}`}
         >
           {icon}
         </div>

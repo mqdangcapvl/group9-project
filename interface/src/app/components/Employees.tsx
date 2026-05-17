@@ -328,7 +328,7 @@ export function Employees() {
                     Available
                   </Typography>
 
-                  <Typography variant="h5" className="font-bold text-green-600">
+                  <Typography variant="h5" className="mt-2 font-bold text-green-600">
                     {availableCount}
                   </Typography>
                 </div>

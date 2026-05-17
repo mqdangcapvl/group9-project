@@ -9,7 +9,6 @@
 class WorkingEmployee: public Employee {
 private:
     vector<Table*> assignedTables;
-
 public:
     WorkingEmployee();
 

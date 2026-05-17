@@ -35,22 +35,13 @@ bool WorkingEmployee::assignTable(
 
         int normalCount = 0;
 
-        for (
-            Table* t
-            : assignedTables
-        ) {
-
-            if (
-                t->getType()
-                != "VIP"
-            ) {
-
+        for ( Table* t : assignedTables ) {
+            if ( t->getType() != "VIP") {
                 normalCount++;
             }
         }
 
         if (normalCount >= 2) {
-
             return false;
         }
     }
@@ -63,12 +54,10 @@ bool WorkingEmployee::assignTable(
 }
 
 int WorkingEmployee::getAssignedTableCount() const {
-
     return assignedTables.size();
 }
 
 vector<Table*>
 WorkingEmployee::getAssignedTables() const {
-
     return assignedTables;
 }
