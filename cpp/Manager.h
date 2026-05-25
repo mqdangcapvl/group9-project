@@ -4,7 +4,7 @@
 #include "FullTimeEmployee.h"
 
 class Manager
-    : public Employee {
+    : public FullTimeEmployee {
 
 private:
     double bonus;

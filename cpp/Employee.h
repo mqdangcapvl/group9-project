@@ -2,6 +2,7 @@
 #define EMPLOYEE_H
 
 #include "Person.h"
+#include "Salary.h"
 
 class Employee : virtual public Person {
 

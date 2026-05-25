@@ -1,10 +1,10 @@
 #ifndef PARTTIMEEMPLOYEE_H
 #define PARTTIMEEMPLOYEE_H
 
-#include "FullTimeEmployee.h"
+#include "Employee.h"
+#include "Salary.h"
 
-class PartTimeEmployee
-    : public FullTimeEmployee {
+class PartTimeEmployee : public Employee {
 
 public:
     PartTimeEmployee(
@@ -16,7 +16,13 @@ public:
         int workedHours = 0
     );
 
+    ~PartTimeEmployee();
+
     double calculateSalary() const override;
+    double getSalaryPerHour() const;
+    int getWorkedHours() const;
+
+    void setSalaryPolicy(Salary* policy);
 };
 
 #endif

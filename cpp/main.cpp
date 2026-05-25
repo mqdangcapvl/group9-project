@@ -44,24 +44,11 @@ int main(
         bool success = manager.login(username,password,loggedIn);
 
         if (success) {
-            cout
-                << "{"
-                << "\"success\":true,"
-                << "\"username\":\""
-                << loggedIn.getUsername()
-                << "\","
-                << "\"role\":\""
-                << loggedIn.getRole()
-                << "\""
-                << "}";
+            cout << "{" << "\"success\":true," << "\"username\":\"" << loggedIn.getUsername() << "\"," << "\"role\":\"" << loggedIn.getRole() << "\"" << "}";
 
         } else {
-            cout
-                << "{"
-                << "\"success\":false"
-                << "}";
+            cout << "{" << "\"success\":false" << "}";
         }
-
         return 0;
     }
     // tables
@@ -85,33 +72,9 @@ int main(
 
             Table* t = tables[i];
 
-            cout
-                << "{"
-                << "\"id\":"
-                << t->getTableId()
-                << ","
-                << "\"number\":\""
-                << t->getLabel()
-                << "\","
-                << "\"type\":\""
-                << t->getType()
-                << "\","
-                << "\"status\":\""
-                << (
-                    t->getStatus()
-                    ? "occupied"
-                    : "available"
-                )
-                << "\","
-                << "\"duration\":"
-                << t->getPlayedMinutes()
-                << ","
-                << "\"pricePerHour\":"
-                << t->getPricePerHour()
-                << "}";
+            cout << "{" << "\"id\":" << t->getTableId() << "," << "\"number\":\"" << t->getLabel() << "\"," << "\"type\":\"" << t->getType() << "\"," << "\"status\":\"" << ( t->getStatus() ? "occupied" : "available" ) << "\"," << "\"duration\":" << t->getPlayedMinutes() << "," << "\"pricePerHour\":" << t->getPricePerHour() << "}";
 
             if (i != tables.size() - 1) {
-
                 cout << ",";
             }
         }
@@ -136,12 +99,7 @@ int main(
         bool success =
             tableManager.startTable(id);
 
-        cout
-            << (
-                success
-                ? "SUCCESS"
-                : "FAILED"
-            );
+        cout << ( success ? "SUCCESS" : "FAILED" );
 
         return 0;
     }
@@ -149,24 +107,15 @@ int main(
     if (command == "endTable") {
 
         if (argc < 3) {
-
             cout << "FAILED";
-
             return 0;
         }
 
-        int id =
-            stoi(argv[2]);
+        int id = stoi(argv[2]);
 
-        bool success =
-            tableManager.endTable(id);
+        bool success = tableManager.endTable(id);
 
-        cout
-            << (
-                success
-                ? "SUCCESS"
-                : "FAILED"
-            );
+        cout << ( success ? "SUCCESS" : "FAILED" );
 
         return 0;
     }
@@ -174,9 +123,7 @@ int main(
 
     Inventory inventory;
 
-    inventory.loadFoods(
-        "../database/foods.txt"
-    );
+    inventory.loadFoods("../database/foods.txt");
 
     if (command == "getFoods") {
 
@@ -194,26 +141,9 @@ int main(
             Food food =
                 foods[i];
 
-            cout
-                << "{"
-                << "\"id\":"
-                << food.getId()
-                << ","
-                << "\"name\":\""
-                << food.getName()
-                << "\","
-                << "\"category\":\""
-                << food.getCategory()
-                << "\","
-                << "\"price\":"
-                << food.getPrice()
-                << ","
-                << "\"quantity\":"
-                << food.getQuantity()
-                << "}";
+            cout << "{" << "\"id\":" << food.getId() << "," << "\"name\":\"" << food.getName() << "\"," << "\"category\":\"" << food.getCategory() << "\"," << "\"price\":" << food.getPrice() << "," << "\"quantity\":" << food.getQuantity() << "}";
 
             if (i != foods.size() - 1) {
-
                 cout << ",";
             }
         }
@@ -226,9 +156,7 @@ int main(
 
     OrderManager orderManager;
 
-    orderManager.loadOrders(
-        "../database/orders.txt"
-    );
+    orderManager.loadOrders("../database/orders.txt");
 
     if (command == "getOrders") {
         vector<Order> orders =
@@ -239,14 +167,7 @@ int main(
         for (int i = 0; i < orders.size(); i++) {
             Order order = orders[i];
 
-            cout
-                << "{"
-                << "\"tableNumber\":\"" << order.getTableNumber() << "\","
-                << "\"name\":\"" << order.getFoodName() << "\","
-                << "\"quantity\":" << order.getQuantity() << ","
-                << "\"price\":" << order.getPrice() << ","
-                << "\"status\":\"" << orderManager.getOrderStatus(order) << "\""
-                << "}";
+            cout << "{" << "\"tableNumber\":\"" << order.getTableNumber() << "\"," << "\"name\":\"" << order.getFoodName() << "\"," << "\"quantity\":" << order.getQuantity() << "," << "\"price\":" << order.getPrice() << "," << "\"status\":\"" << orderManager.getOrderStatus(order) << "\"" << "}";
 
             if (i != orders.size() - 1) {
                 cout << ",";
@@ -263,8 +184,7 @@ int main(
             return 0;
         }
 
-        bool success =
-            orderManager.markTableOrdersDone(argv[2]);
+        bool success = orderManager.markTableOrdersDone(argv[2]);
 
         cout << "{\"success\":" << (success ? "true" : "false") << "}";
         return 0;
@@ -316,88 +236,33 @@ int main(
         return 0;
     }
 
-    vector<Order> tableOrders =
-        orderManager.getTableOrders(tableNumber);
-
-    double tableCharge =
-        selectedTable->calculateCurrentPrice();
-
-    double foodTotal =
-        orderManager.calculateTableFoodTotal(tableNumber);
-
+    vector<Order> tableOrders = orderManager.getTableOrders(tableNumber);
+    double tableCharge = selectedTable->calculateCurrentPrice();
+    double foodTotal = orderManager.calculateTableFoodTotal(tableNumber);
     bool memberApplied = false;
 
     if (memberName != "") {
 
         MemberManager memberManager;
 
-        memberManager.loadMembers(
-            "../database/members.txt"
-        );
+        memberManager.loadMembers("../database/members.txt");
 
-        memberApplied =
-            memberManager.hasActiveMemberByName(
-                memberName
-            );
+        memberApplied = memberManager.hasActiveMemberByName( memberName );
     }
 
-    double subtotal =
-        tableCharge + foodTotal;
+    double subtotal = tableCharge + foodTotal;
 
-    double discount =
-        memberApplied
-            ? subtotal * 0.1
-            : 0;
+    double discount = memberApplied ? subtotal * 0.1 : 0;
 
-    double total =
-        subtotal - discount;
+    double total = subtotal - discount;
 
-    cout
-        << "{"
-        << "\"success\":true,"
-        << "\"tableNumber\":\""
-        << tableNumber
-        << "\","
-        << "\"tableCharge\":"
-        << tableCharge
-        << ","
-        << "\"foodTotal\":"
-        << foodTotal
-        << ","
-        << "\"discount\":"
-        << discount
-        << ","
-        << "\"total\":"
-        << total
-        << ","
-        << "\"memberApplied\":"
-        << (
-            memberApplied
-            ? "true"
-            : "false"
-        )
-        << ","
-        << "\"orders\":[";
+    cout << "{" << "\"success\":true," << "\"tableNumber\":\"" << tableNumber << "\"," << "\"tableCharge\":" << tableCharge << "," << "\"foodTotal\":" << foodTotal << "," << "\"discount\":" << discount << "," << "\"total\":" << total << "," << "\"memberApplied\":" << (memberApplied? "true": "false")<< ","<< "\"orders\":[";
 
     for (int i = 0; i < tableOrders.size(); i++) {
 
-        Order order =
-            tableOrders[i];
+        Order order = tableOrders[i];
 
-        cout
-            << "{"
-            << "\"name\":\""
-            << order.getFoodName()
-            << "\","
-            << "\"quantity\":"
-            << order.getQuantity()
-            << ","
-            << "\"price\":"
-            << order.getPrice()
-            << ","
-            << "\"amount\":"
-            << order.getTotal()
-            << "}";
+        cout << "{" << "\"name\":\"" << order.getFoodName() << "\"," << "\"quantity\":" << order.getQuantity() << "," << "\"price\":" << order.getPrice() << "," << "\"amount\":" << order.getTotal() << "}";
 
         if (i != tableOrders.size() - 1) {
             cout << ",";
@@ -410,7 +275,7 @@ int main(
 }
 if (command == "addOrder") {
     if (argc < 6) {
-        cout << "{\"success\":false}";
+        cout << "{\"success\":false,\"error\":\"Missing order fields\"}";
         return 0;
     }
 
@@ -419,9 +284,23 @@ if (command == "addOrder") {
     int quantity = stoi(argv[4]);
     double price = stod(argv[5]);
 
-    orderManager.addOrder(
-        Order(tableNumber, foodName, quantity, price)
-    );
+    string error;
+
+    bool inventoryReduced =
+        inventory.reduceInventoryByName(
+            "../database/inventory.txt",
+            foodName,
+            quantity,
+            error
+        );
+
+    if (!inventoryReduced) {
+        cout << "{" << "\"success\":false," << "\"error\":\"" << error << "\"" << "}";
+
+        return 0;
+    }
+
+    orderManager.addOrder(Order(tableNumber, foodName, quantity, price));
 
     cout << "{\"success\":true}";
     return 0;
@@ -450,14 +329,11 @@ if (command == "calculateBill") {
         return 0;
     }
 
-    vector<Order> tableOrders =
-        orderManager.getTableOrders(tableNumber);
+    vector<Order> tableOrders = orderManager.getTableOrders(tableNumber);
 
-    double tableCharge =
-        selectedTable->calculateCurrentPrice();
+    double tableCharge = selectedTable->calculateCurrentPrice();
 
-    double foodTotal =
-        orderManager.calculateTableFoodTotal(tableNumber);
+    double foodTotal = orderManager.calculateTableFoodTotal(tableNumber);
 
     bool memberApplied = false;
 
@@ -480,28 +356,12 @@ if (command == "calculateBill") {
     double discount = memberApplied ? subtotal * 0.1 : 0;
     double total = subtotal - discount;
 
-    cout
-        << "{"
-        << "\"success\":true,"
-        << "\"tableNumber\":\"" << tableNumber << "\","
-        << "\"tableCharge\":" << tableCharge << ","
-        << "\"foodTotal\":" << foodTotal << ","
-        << "\"discount\":" << discount << ","
-        << "\"total\":" << total << ","
-        << "\"memberApplied\":" << (memberApplied ? "true" : "false")
-        << ","
-        << "\"orders\":[";
+    cout << "{" << "\"success\":true," << "\"tableNumber\":\"" << tableNumber << "\"," << "\"tableCharge\":" << tableCharge << "," << "\"foodTotal\":" << foodTotal << "," << "\"discount\":" << discount << "," << "\"total\":" << total << "," << "\"memberApplied\":" << (memberApplied ? "true" : "false") << "," << "\"orders\":[";
 
     for (int i = 0; i < tableOrders.size(); i++) {
         Order order = tableOrders[i];
 
-        cout
-            << "{"
-            << "\"name\":\"" << order.getFoodName() << "\","
-            << "\"quantity\":" << order.getQuantity() << ","
-            << "\"price\":" << order.getPrice() << ","
-            << "\"amount\":" << order.getTotal()
-            << "}";
+        cout << "{" << "\"name\":\"" << order.getFoodName() << "\"," << "\"quantity\":" << order.getQuantity() << "," << "\"price\":" << order.getPrice() << "," << "\"amount\":" << order.getTotal() << "}";
 
         if (i != tableOrders.size() - 1) {
             cout << ",";
@@ -522,22 +382,11 @@ if (command == "calculateBill") {
 
         EmployeeManager employeeManager;
 
-        employeeManager.loadEmployees(
-            "../database/employees.txt"
-        );
+        employeeManager.loadEmployees("../database/employees.txt");
 
-        bool success =
-            employeeManager.removeEmployee(id);
+        bool success = employeeManager.removeEmployee(id);
 
-        cout
-            << "{"
-            << "\"success\":"
-            << (
-                success
-                ? "true"
-                : "false"
-            )
-            << "}";
+        cout << "{" << "\"success\":" << ( success ? "true" : "false" ) << "}";
 
         return 0;
     }
@@ -545,30 +394,23 @@ if (command == "calculateBill") {
 if (command == "addEmployee") {
 
     if (argc < 9) {
-        cout
-            << "{"
-            << "\"success\":false,"
-            << "\"error\":\"Missing arguments\""
-            << "}";
+        cout << "{" << "\"success\":false," << "\"error\":\"Missing arguments\"" << "}";
 
         return 0;
     }
     string type = argv[2];
+
     int id = stoi(argv[3]);
     string name = argv[4];
     int age = stoi(argv[5]);
     string cccd = argv[6];
+
     double salaryPerHour = stod(argv[7]);
     int workedHours = stoi(argv[8]);
     double bonus = 0;
 
-    if (
-        type == "MANAGER"
-        && argc >= 10
-    ) {
-
-        bonus =
-            stod(argv[9]);
+    if ( type == "MANAGER" && argc >= 10 ) {
+        bonus = stod(argv[9]);
     }
 
     EmployeeManager employeeManager;
@@ -580,69 +422,31 @@ if (command == "addEmployee") {
     // fulltime employee
 
     if (type == "FULLTIME") {
-
         employee =
-
-            new FullTimeEmployee(
-                name,
-                age,
-                cccd,
-                id,
-                salaryPerHour,
-                workedHours
-            );
+            new FullTimeEmployee(name,age,cccd,id,salaryPerHour,workedHours);
     }
 
     // partime employee
 
     else if (type == "PARTTIME") {
 
-        employee =
-            new PartTimeEmployee(
-                name,
-                age,
-                cccd,
-                id,
-                salaryPerHour,
-                workedHours
-            );
+        employee = new PartTimeEmployee(name,age,cccd,id,salaryPerHour,workedHours);
     }
 
     // manager 
 
     else if (type == "MANAGER") {
-        employee =
-            new Manager(
-                name,
-                age,
-                cccd,
-                id,
-                salaryPerHour,
-                workedHours,
-                bonus
-            );
+        employee = new Manager( name, age, cccd, id, salaryPerHour, workedHours, bonus );
     }
 
     // invalid type
-
     else {
-        cout
-            << "{"
-            << "\"success\":false,"
-            << "\"error\":\"Invalid employee type\""
-            << "}";
-
+        cout << "{" << "\"success\":false," << "\"error\":\"Invalid employee type\"" << "}";
         return 0;
     }
 
-    employeeManager.addEmployee(
-        employee
-    );
-
-    cout
-        << "{"
-        << "\"success\":true"
-        << "}";
+    employeeManager.addEmployee(employee);
+    cout << "{" << "\"success\":true" << "}";
 
     return 0;
 }

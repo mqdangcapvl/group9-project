@@ -10,25 +10,43 @@ PartTimeEmployee::PartTimeEmployee(
 )
 
 : Person(name, age, cccd),
-  FullTimeEmployee(
-    name,
-    age,
-    cccd,
-    id,
-    salaryPerHour,
-    workedHours
-)
+  Employee(name, age, cccd, id)
 
 {
-    setSalaryPolicy(
+    this->salaryPerHour =
+        salaryPerHour;
+
+    this->workedHours =
+        workedHours;
+
+    salaryPolicy =
         new PartTimeSalary(
             salaryPerHour,
             workedHours,
             0
-        )
-    );
+        );
+}
+
+PartTimeEmployee::~PartTimeEmployee() {
+    delete salaryPolicy;
 }
 
 double PartTimeEmployee::calculateSalary() const {
     return salaryPolicy->calculate();
+}
+
+double PartTimeEmployee::getSalaryPerHour() const {
+    return salaryPerHour;
+}
+
+int PartTimeEmployee::getWorkedHours() const {
+    return workedHours;
+}
+
+void PartTimeEmployee::setSalaryPolicy(
+    Salary* policy
+) {
+    delete salaryPolicy;
+
+    salaryPolicy = policy;
 }
