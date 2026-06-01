@@ -8,13 +8,9 @@ class MemberManager {
 private:
     vector<Member> members;
 public:
-    void loadMembers(
-        const string& filename
-    );
+    void loadMembers(const string& filename);
     vector<Member> getMembers() const;
-    bool hasActiveMemberByName(
-    const string& name
-    ) const;
+    bool hasActiveMemberByName(const string& name) const;
 };
     
 #endif

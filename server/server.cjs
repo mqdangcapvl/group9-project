@@ -2,16 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-
-const { spawn } =
-  require('child_process');
-
+const { spawn } = require('child_process');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-
 
 // ================= RUN CPP =================
 
@@ -29,37 +24,23 @@ function runCpp(args) {
       let output = '';
       let error = '';
 
-      cpp.stdout.on(
-        'data',
-        (data) => {
+      cpp.stdout.on('data', (data) => {
           output += data.toString();
         }
       );
-
-      cpp.stderr.on(
-        'data',
-        (data) => {
+      cpp.stderr.on('data',(data) => {
           error += data.toString();
         }
       );
-
-      cpp.on(
-        'error',
-        (err) => {
+      cpp.on('error', (err) => {
           reject(err);
         }
       );
-
-      cpp.on(
-        'close',
-        (code) => {
+      cpp.on('close', (code) => {
           if (code !== 0 || error) {
-            reject(
-              error || `C++ exited with code ${code}`
-            );
+            reject(error || `C++ exited with code ${code}`);
             return;
           }
-
           resolve(output.trim());
         }
       );
@@ -67,36 +48,18 @@ function runCpp(args) {
   );
 }
 
-
-
 // ================= LOGIN =================
 
-app.post(
-  '/cpp/login',
-
+app.post('/cpp/login',
   async (req, res) => {
-
     try {
-
-      const {
-        username,
-        password,
-      } = req.body;
-
-      const result =
-        await runCpp([
-          'login',
-          username,
-          password,
-        ]);
-
+      const {username,password,} = req.body;
+      const result =await runCpp(['login',username,password,]);
       res.json(
         JSON.parse(result.trim())
       );
-
-
-    } catch (error) {
-
+    } 
+    catch (error) {
       res.status(500).json({
         success: false,
         error:
@@ -106,126 +69,75 @@ app.post(
   }
 );
 
-
 // ================= TABLES =================
 
-app.get(
-  '/cpp/tables',
-
+app.get('/cpp/tables',
   async (req, res) => {
-
     try {
-
-      const result =
-        await runCpp([
-          'getTables',
-        ]);
-
+      const result = await runCpp(['getTables',]);
       res.json(
         JSON.parse(result)
       );
-
-    } catch (error) {
-
+    } 
+    catch (error) {
       res.status(500).json({
-        error:
-          error.toString(),
+        error: error.toString(),
       });
     }
   }
 );
 
-
-app.post(
-  '/cpp/tables/start/:id',
-
+app.post('/cpp/tables/start/:id',
   async (req, res) => {
-
     try {
-
-      const result =
-        await runCpp([
-          'startTable',
-          req.params.id,
-        ]);
-
+      const result = await runCpp([ 'startTable', req.params.id, ]);
       res.json({
-        success:
-          result.includes(
-            'SUCCESS'
-          ),
+        success: result.includes( 'SUCCESS' ),
       });
-
-    } catch (error) {
-
+    } 
+    catch (error) {
       res.status(500).json({
-        error:
-          error.toString(),
+        error: error.toString(),
       });
     }
   }
 );
 
-
-app.post(
-  '/cpp/tables/end/:id',
-
+app.post('/cpp/tables/end/:id',
   async (req, res) => {
-
     try {
-
-      const result =
-        await runCpp([
-          'endTable',
-          req.params.id,
-        ]);
-
+      const result = await runCpp([ 'endTable', req.params.id, ]);
       res.json({
-        success:
-          result.includes(
-            'SUCCESS'
-          ),
+        success: result.includes( 'SUCCESS' ),
       });
-
-    } catch (error) {
-
+    } 
+    catch (error) {
       res.status(500).json({
-        error:
-          error.toString(),
+        error: error.toString(),
       });
     }
   }
 );
-
 
 // ================= FOODS =================
 
-app.get(
-  '/cpp/foods',
-
+app.get('/cpp/foods',
   async (req, res) => {
-
     try {
-
-      const result =
-        await runCpp([
+      const result =  await runCpp([
           'getFoods',
         ]);
-
       res.json(
         JSON.parse(result)
       );
-
-    } catch (error) {
-
+    } 
+    catch (error) {
       res.status(500).json({
-        error:
-          error.toString(),
+        error: error.toString(),
       });
     }
   }
 );
-
 
 // ================= ORDERS =================
 
@@ -1128,6 +1040,45 @@ app.post('/cpp/inventory', (req, res) => {
 
     const items = readInventory();
 
+    const normalize = value =>
+      String(value || '').trim().toLowerCase();
+
+    const addedQuantity = Number(quantity || 0);
+
+    const existingItem =
+      items.find(item =>
+        normalize(item.name) === normalize(name) &&
+        normalize(item.category) === normalize(category) &&
+        normalize(item.unit) === normalize(unit) &&
+        item.quantity <= item.minStock
+      ) ||
+      items.find(item =>
+        normalize(item.name) === normalize(name) &&
+        normalize(item.category) === normalize(category) &&
+        normalize(item.unit) === normalize(unit)
+      );
+
+    if (existingItem) {
+      existingItem.quantity += addedQuantity;
+
+      if (minStock !== undefined && minStock !== '') {
+        existingItem.minStock = Number(minStock);
+      }
+
+      if (price !== undefined && price !== '') {
+        existingItem.price = Number(price);
+      }
+
+      saveInventory(items);
+
+      res.json({
+        success: true,
+        item: existingItem,
+      });
+
+      return;
+    }
+
     const nextId =
       items.length === 0
         ? 1
@@ -1137,7 +1088,7 @@ app.post('/cpp/inventory', (req, res) => {
       id: nextId,
       name,
       category,
-      quantity: Number(quantity || 0),
+      quantity: addedQuantity,
       unit,
       minStock: Number(minStock || 0),
       price: Number(price || 0),
@@ -1152,12 +1103,12 @@ app.post('/cpp/inventory', (req, res) => {
       item,
     });
 
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.toString(),
-    });
-  }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.toString(),
+      });
+    }
 });
 // ================= ADD ORDER =================
 
@@ -1328,7 +1279,8 @@ app.post('/cpp/bill/history', (req, res) => {
       bill,
     });
 
-  } catch (error) {
+  } 
+  catch (error) {
     res.status(500).json({
       success: false,
       error: error.toString(),
@@ -1336,16 +1288,9 @@ app.post('/cpp/bill/history', (req, res) => {
   }
 });
 
-
 // ================= SERVER =================
 
-app.listen(
-  5000,
-
-  () => {
-
-    console.log(
-      'Server running on port 5000'
-    );
+app.listen(5000, () => {
+    console.log('Server running on port 5000');
   }
 );

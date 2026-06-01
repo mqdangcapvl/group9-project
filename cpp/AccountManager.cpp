@@ -41,15 +41,10 @@ bool AccountManager::login(
 
     for (auto& acc : accounts) {
 
-        if (
-            acc.getUsername() == username &&
-            acc.getPassword() == password
-        ) {
-
+        if (acc.getUsername() == username &&acc.getPassword() == password) {
             loggedInAccount = acc;
             return true;
         }
     }
-
     return false;
 }

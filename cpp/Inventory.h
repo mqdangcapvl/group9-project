@@ -38,6 +38,12 @@ public:
         int quantity,
         string& error
     );
+    bool increaseInventoryByName(
+        const string& filename,
+        const string& itemName,
+        int quantity,
+        string& error
+    );
 };
 
 #endif

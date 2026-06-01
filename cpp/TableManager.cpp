@@ -32,12 +32,7 @@ void TableManager::loadTables(const string& filename) {
         string statusStr;
         string startTimeStr;
 
-        if (
-            !getline(ss, idStr, ',') ||
-            !getline(ss, type, ',') ||
-            !getline(ss, priceStr, ',') ||
-            !getline(ss, statusStr, ',')
-        ) {
+        if ( !getline(ss, idStr, ',') || !getline(ss, type, ',') || !getline(ss, priceStr, ',') || !getline(ss, statusStr, ',')) {
             continue;
         }
 
@@ -50,26 +45,20 @@ void TableManager::loadTables(const string& filename) {
         if (type == "VIP") {
             table = new VIPTable( id, price );
 
-        } else if (type == "NORMAL_A") {
+        } 
+        else if (type == "NORMAL_A") {
             table = new NormalTableA( id, price );
 
-        } else {
+        } 
+        else {
             table = new NormalTableB( id, price );
         }
-
         if (statusStr == "occupied") {
             table->turnOn();
-
             if (!startTimeStr.empty()) {
-                time_t savedStartTime =
-                    static_cast<time_t>(
-                        stoll(startTimeStr)
-                    );
-
+                time_t savedStartTime =static_cast<time_t>(stoll(startTimeStr));
                 if (savedStartTime > 0) {
-                    table->setStartTime(
-                        savedStartTime
-                    );
+                    table->setStartTime(savedStartTime);
                 }
             }
         }
@@ -80,33 +69,11 @@ void TableManager::loadTables(const string& filename) {
     file.close();
 }
 
-void TableManager::saveTables(
-    const string& filename
-) {
-
+void TableManager::saveTables(const string& filename) {
     ofstream file(filename);
 
-    for (Table* t : tables) {
-
-        file
-            << t->getTableId()
-            << ","
-            << t->getType()
-            << ","
-            << t->getPricePerHour()
-            << ","
-            << (
-                t->getStatus()
-                ? "occupied"
-                : "available"
-            )
-            << ","
-            << (
-                t->getStatus()
-                ? t->getStartTime()
-                : 0
-            )
-            << endl;
+    for (Table* t : tables) { 
+        file << t->getTableId() << "," << t->getType() << "," << t->getPricePerHour() << "," << ( t->getStatus() ? "occupied" : "available" ) << "," << ( t->getStatus() ? t->getStartTime() : 0 ) << endl;
     }
 
     file.close();
@@ -127,31 +94,25 @@ Table* TableManager::findTable(int id) {
 }
 
 bool TableManager::startTable(int id) {
-    Table* table =
-        findTable(id);
+    Table* table = findTable(id);
     if (!table)
         return false;
     table->turnOn();
 
-    saveTables(
-        "../database/tables.txt"
-    );
+    saveTables("../database/tables.txt");
 
     return true;
 }
 
 bool TableManager::endTable(int id) {
-    Table* table =
-        findTable(id);
+    Table* table = findTable(id);
 
     if (!table)
         return false;
 
     table->turnOff();
 
-    saveTables(
-        "../database/tables.txt"
-    );
+    saveTables("../database/tables.txt");
 
     return true;
 }

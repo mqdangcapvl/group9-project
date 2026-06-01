@@ -4,28 +4,20 @@
 #include <sstream>
 
 EmployeeManager::~EmployeeManager() {
-
     for (Employee* e : employees) {
-
         delete e;
     }
 }
 
-void EmployeeManager::loadEmployees(
-    const string& filename
-) {
-
+void EmployeeManager::loadEmployees(const string& filename) {
     for (Employee* e : employees) {
-
         delete e;
     }
-
     employees.clear();
 
     ifstream file(filename);
 
     string line;
-
     while (getline(file, line)) {
 
         stringstream ss(line);
@@ -49,72 +41,39 @@ void EmployeeManager::loadEmployees(
         getline(ss, salaryStr, ',');
         getline(ss, hoursStr, ',');
 
-        int id =
-            stoi(idStr);
+        int id = stoi(idStr);
 
-        int age =
-            stoi(ageStr);
+        int age = stoi(ageStr);
 
-        double salary =
-            stod(salaryStr);
+        double salary = stod(salaryStr);
 
-        int hours =
-            stoi(hoursStr);
+        int hours = stoi(hoursStr);
 
-        // ================= MANAGER =================
+        // Manager
 
         if (type == "MANAGER") {
-
             getline(ss, bonusStr, ',');
 
-            double bonus =
-                stod(bonusStr);
+            double bonus = stod(bonusStr);
 
             employees.push_back(
-
-                new Manager(
-                    name,
-                    age,
-                    cccd,
-                    id,
-                    salary,
-                    hours,
-                    bonus
-                )
+                new Manager( name, age, cccd, id, salary, hours, bonus )
             );
         }
 
-        // ================= FULL TIME =================
+        // Fulltime
 
         else if (type == "FULLTIME") {
-
             employees.push_back(
-
-                new FullTimeEmployee(
-                    name,
-                    age,
-                    cccd,
-                    id,
-                    salary,
-                    hours
-                )
+                new FullTimeEmployee( name, age, cccd, id, salary, hours )
             );
         }
 
-        // ================= PART TIME =================
+        // Parttime
 
         else if (type == "PARTTIME") {
-
             employees.push_back(
-
-                new PartTimeEmployee(
-                    name,
-                    age,
-                    cccd,
-                    id,
-                    salary,
-                    hours
-                )
+                new PartTimeEmployee( name, age, cccd, id, salary, hours )
             );
         }
     }
@@ -122,111 +81,54 @@ void EmployeeManager::loadEmployees(
     file.close();
 }
 
-void EmployeeManager::saveEmployees(
-    const string& filename
-) {
-
+void EmployeeManager::saveEmployees(const string& filename) {
     ofstream file(filename);
 
     for (Employee* e : employees) {
+        Manager* manager = dynamic_cast<Manager*>(e);
 
-        Manager* manager =
-            dynamic_cast<Manager*>(e);
+        PartTimeEmployee* partTime = dynamic_cast<PartTimeEmployee*>(e);
 
-        PartTimeEmployee* partTime =
-            dynamic_cast<PartTimeEmployee*>(e);
+        FullTimeEmployee* fullTime = dynamic_cast<FullTimeEmployee*>(e);
 
-        FullTimeEmployee* fullTime =
-            dynamic_cast<FullTimeEmployee*>(e);
-
-        // ================= MANAGER =================
+        // Manager
 
         if (manager) {
-
-            file
-                << "MANAGER,"
-                << manager->getId() << ","
-                << manager->getName() << ","
-                << manager->getAge() << ","
-                << manager->getCccd() << ","
-                << manager->getSalaryPerHour() << ","
-                << manager->getWorkedHours() << ","
-                << manager->getBonus()
-                << endl;
+            file << "MANAGER," << manager->getId() << "," << manager->getName() << "," << manager->getAge() << "," << manager->getCccd() << "," << manager->getSalaryPerHour() << "," << manager->getWorkedHours() << "," << manager->getBonus() << endl;
         }
 
-        // ================= PART TIME =================
+        // Parttime
 
         else if (partTime) {
-
-            file
-                << "PARTTIME,"
-                << partTime->getId() << ","
-                << partTime->getName() << ","
-                << partTime->getAge() << ","
-                << partTime->getCccd() << ","
-                << partTime->getSalaryPerHour() << ","
-                << partTime->getWorkedHours()
-                << endl;
+            file << "PARTTIME," << partTime->getId() << "," << partTime->getName() << "," << partTime->getAge() << "," << partTime->getCccd() << "," << partTime->getSalaryPerHour() << "," << partTime->getWorkedHours() << endl;
         }
 
-        // ================= FULL TIME =================
+        // Fulltime
 
         else if (fullTime) {
-
-            file
-                << "FULLTIME,"
-                << fullTime->getId() << ","
-                << fullTime->getName() << ","
-                << fullTime->getAge() << ","
-                << fullTime->getCccd() << ","
-                << fullTime->getSalaryPerHour() << ","
-                << fullTime->getWorkedHours()
-                << endl;
+            file << "FULLTIME," << fullTime->getId() << "," << fullTime->getName() << "," << fullTime->getAge() << "," << fullTime->getCccd() << "," << fullTime->getSalaryPerHour() << "," << fullTime->getWorkedHours() << endl;
         }
     }
-
     file.close();
 }
 
-void EmployeeManager::addEmployee(
-    Employee* employee
-) {
-
+void EmployeeManager::addEmployee(Employee* employee) {
     employees.push_back(employee);
 
-    saveEmployees(
-        "../database/employees.txt"
-    );
+    saveEmployees("../database/employees.txt");
 }
 
-bool EmployeeManager::removeEmployee(
-    int id
-) {
-
-    for (
-        auto it = employees.begin();
-        it != employees.end();
-        ++it
-    ) {
+bool EmployeeManager::removeEmployee(int id) {
+    for ( auto it = employees.begin(); it != employees.end(); ++it) {
 
         if ((*it)->getId() == id) {
-
             delete *it;
-
             employees.erase(it);
 
-            saveEmployees(
-                "../database/employees.txt"
-            );
-
+            saveEmployees( "../database/employees.txt" );
             SalaryManager salaryManager;
 
-            salaryManager.removeSalaryByEmployeeId(
-                id,
-                "../database/salaries.txt"
-            );
-
+            salaryManager.removeSalaryByEmployeeId( id, "../database/salaries.txt" );
             return true;
         }
     }
@@ -236,21 +138,14 @@ bool EmployeeManager::removeEmployee(
 
 vector<Employee*>
 EmployeeManager::getEmployees() const {
-
     return employees;
 }
 
-Employee* EmployeeManager::findEmployee(
-    int id
-) {
-
+Employee* EmployeeManager::findEmployee(int id) {
     for (Employee* e : employees) {
-
         if (e->getId() == id) {
-
             return e;
         }
     }
-
     return nullptr;
 }

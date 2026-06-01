@@ -1,12 +1,6 @@
 #include "Food.h"
 
-Food::Food(
-    int id,
-    string name,
-    string category,
-    double price,
-    int quantity
-) {
+Food::Food( int id, string name, string category, double price, int quantity ) {
     this->id = id;
     this->name = name;
     this->category = category;

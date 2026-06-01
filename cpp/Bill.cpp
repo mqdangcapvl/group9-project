@@ -28,28 +28,16 @@ void Bill::addFood(Food food,int quantity) {
 }
 
 double Bill::calculateFoodTotal() const {
-
     double total = 0;
-
-    for (
-        const pair<Food, int>& item
-        : orderedFoods
-    ) {
-
-        total +=
-            item.first.getPrice()
-            * item.second;
+    for (const pair<Food, int>& item: orderedFoods) {
+        total += item.first.getPrice() * item.second;
     }
 
     return total;
 }
 
 double Bill::calculateTotal() const {
-
-    double total =
-        tablePrice +
-        calculateFoodTotal();
-
+    double total = tablePrice + calculateFoodTotal();
     if (memberDiscount) {
         total *= 0.9;
     }

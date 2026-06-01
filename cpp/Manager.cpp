@@ -2,37 +2,12 @@
 
 int Manager::totalManagers = 0;
 
-Manager::Manager(
-    string name,
-    int age,
-    string cccd,
-    int id,
-    double salaryPerHour,
-    int workedHours,
-    double bonus
-)
-
-: Person(name, age, cccd),
-  FullTimeEmployee(
-    name,
-    age,
-    cccd,
-    id,
-    salaryPerHour,
-    workedHours
-)
-
-{
+Manager::Manager( string name, int age, string cccd, int id, double salaryPerHour, int workedHours, double bonus ) : Person(name, age, cccd),
+FullTimeEmployee( name, age, cccd, id, salaryPerHour, workedHours ) {
     this->bonus = bonus;
-
     setSalaryPolicy(
-        new ManagerSalary(
-            salaryPerHour,
-            workedHours,
-            bonus
-        )
+        new ManagerSalary( salaryPerHour, workedHours, bonus )
     );
-
     totalManagers++;
 }
 

@@ -6,43 +6,22 @@
 #include <sstream>
 
 static string normalizeText(string value) {
-    value.erase(
-        value.begin(),
-        find_if(
-            value.begin(),
-            value.end(),
-            [](unsigned char ch) {
-                return !isspace(ch);
-            }
-        )
+    value.erase( value.begin(), find_if( value.begin(), value.end(), [](unsigned char ch) {
+        return !isspace(ch);
+        })
     );
 
-    value.erase(
-        find_if(
-            value.rbegin(),
-            value.rend(),
-            [](unsigned char ch) {
-                return !isspace(ch);
-            }
-        ).base(),
-        value.end()
+    value.erase( find_if( value.rbegin(), value.rend(), [](unsigned char ch) { return !isspace(ch); } ).base(),
+    value.end()
     );
 
-    transform(
-        value.begin(),
-        value.end(),
-        value.begin(),
-        [](unsigned char ch) {
-            return tolower(ch);
-        }
-    );
-
+    transform( value.begin(), value.end(), value.begin(), [](unsigned char ch) {
+        return tolower(ch);
+    });
     return value;
 }
 
-void Inventory::loadFoods(
-    const string& filename
-) {
+void Inventory::loadFoods(const string& filename) {
     foods.clear();
 
     ifstream file(filename);
@@ -68,13 +47,7 @@ void Inventory::loadFoods(
         getline(ss, quantityStr, ',');
 
         foods.push_back(
-            Food(
-                stoi(idStr),
-                name,
-                category,
-                stod(priceStr),
-                stoi(quantityStr)
-            )
+            Food( stoi(idStr), name, category, stod(priceStr), stoi(quantityStr) )
         );
     }
 
@@ -95,57 +68,34 @@ Food* Inventory::findFood(int id) {
     return nullptr;
 }
 
-void Inventory::saveFoods(
-    const string& filename
-) {
+void Inventory::saveFoods(const string& filename) {
     ofstream file(filename);
 
     for (Food& food : foods) {
-        file
-            << food.getId() << ","
-            << food.getName() << ","
-            << food.getCategory() << ","
-            << food.getPrice() << ","
-            << food.getQuantity()
-            << endl;
+        file << food.getId() << "," << food.getName() << "," << food.getCategory() << "," << food.getPrice() << "," << food.getQuantity() << endl;
     }
 
     file.close();
 }
 
-void Inventory::addFood(
-    const Food& food
-) {
+void Inventory::addFood(const Food& food) {
     foods.push_back(food);
 
-    saveFoods(
-        "../database/foods.txt"
-    );
+    saveFoods("../database/foods.txt");
 }
 
 bool Inventory::removeFood(int id) {
-    for (
-        auto it = foods.begin();
-        it != foods.end();
-        ++it
-    ) {
+    for ( auto it = foods.begin(); it != foods.end(); ++it) {
         if (it->getId() == id) {
             foods.erase(it);
-
-            saveFoods(
-                "../database/foods.txt"
-            );
-
+            saveFoods("../database/foods.txt");
             return true;
         }
     }
-
     return false;
 }
 
-vector<InventoryItem> Inventory::loadInventoryItems(
-    const string& filename
-) {
+vector<InventoryItem> Inventory::loadInventoryItems(const string& filename) {
     vector<InventoryItem> items;
 
     ifstream file(filename);
@@ -209,26 +159,62 @@ bool Inventory::reduceInventoryByName( const string& filename, const string& ite
     }
 
     vector<InventoryItem> items = loadInventoryItems(filename);
+    string targetName = normalizeText(itemName);
 
+    int totalAvailable = 0;
+
+    for (const InventoryItem& item : items) {
+        if (normalizeText(item.name) == targetName) {
+            totalAvailable += item.quantity;
+        }
+    }
+
+    if (totalAvailable == 0) {
+        error = "Food " + itemName + " does not exist in inventory";
+        return false;
+    }
+
+    if (totalAvailable < quantity) {
+        error = "Not enough " + itemName + " in inventory";
+        return false;
+    }
+
+    int remaining = quantity;
+
+    for (InventoryItem& item : items) {
+        if (normalizeText(item.name) != targetName) {
+            continue;
+        }
+
+        int used = min(item.quantity, remaining);
+        item.quantity -= used;
+        remaining -= used;
+
+        if (remaining == 0) {
+            break;
+        }
+    }
+
+    saveInventoryItems(filename, items);
+    return true;
+}
+bool Inventory::increaseInventoryByName( const string& filename, const string& itemName, int quantity, string& error ) {
+    if (quantity <= 0) {
+        error = "Quantity must be greater than 0";
+        return false;
+    }
+
+    vector<InventoryItem> items = loadInventoryItems(filename);
     string targetName = normalizeText(itemName);
 
     for (InventoryItem& item : items) {
         if (normalizeText(item.name) == targetName) {
-            if (item.quantity < quantity) {
-                error = "Not enough " + item.name + " in inventory";
-
-                return false;
-            }
-
-            item.quantity -= quantity;
-
+            item.quantity += quantity;
             saveInventoryItems(filename, items);
-
             return true;
         }
     }
 
     error = "Food " + itemName + " does not exist in inventory";
-
     return false;
 }

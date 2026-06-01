@@ -256,7 +256,7 @@ export function Salary() {
         spacing={3}
         className="mb-4"
       >
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -284,7 +284,7 @@ export function Salary() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <div className="flex items-center gap-3">

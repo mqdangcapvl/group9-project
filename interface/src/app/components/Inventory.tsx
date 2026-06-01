@@ -167,7 +167,7 @@ export function Inventory() {
       </div>
 
       <Grid container spacing={3} className="mb-4">
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export function Inventory() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -211,7 +211,7 @@ export function Inventory() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -350,7 +350,7 @@ export function Inventory() {
             />
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="Quantity"
@@ -369,7 +369,7 @@ export function Inventory() {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="Unit"
@@ -385,7 +385,7 @@ export function Inventory() {
             </Grid>
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="Min Stock"
@@ -404,7 +404,7 @@ export function Inventory() {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="Price"

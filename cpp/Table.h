@@ -9,7 +9,6 @@
 using namespace std;
 
 class Table : virtual public Bill {
-
 protected:
     int tableId;
     bool status;
@@ -17,17 +16,10 @@ protected:
     string label;
     string type;
     time_t startTime;
-
 private:
     static int totalTables;
-
 public:
-    Table(
-        int id = 0,
-        double pricePerHour = 50000,
-        string label = "",
-        string type = "NORMAL"
-    );
+    Table(int id = 0,double pricePerHour = 50000,string label = "",string type = "NORMAL");
 
     virtual void turnOn();
     virtual void turnOff();
@@ -48,30 +40,17 @@ public:
 };
 
 class VIPTable : public Table {
-
-public:
-    VIPTable(
-        int id = 0,
-        double pricePerHour = 100000
-    );
+public: VIPTable(int id = 0,double pricePerHour = 100000);
 };
 
 class NormalTableA : public Table {
-
 public:
-    NormalTableA(
-        int id = 0,
-        double pricePerHour = 50000
-    );
+    NormalTableA(int id = 0,double pricePerHour = 50000);
 };
 
 class NormalTableB : public Table {
-
 public:
-    NormalTableB(
-        int id = 0,
-        double pricePerHour = 30000
-    );
+    NormalTableB(int id = 0,double pricePerHour = 30000);
 };
 
 #endif

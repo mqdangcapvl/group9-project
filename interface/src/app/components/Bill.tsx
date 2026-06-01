@@ -271,7 +271,7 @@ export function Bill() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Typography
@@ -449,7 +449,7 @@ export function Bill() {
           )}
         </Grid>
 
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           {!currentTable || !billPreview ? (
             <Card className="h-full">
               <CardContent className="flex items-center justify-center h-full min-h-[400px]">
@@ -544,7 +544,7 @@ export function Bill() {
           )}
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
   <Card>
     <CardContent>
       <Typography

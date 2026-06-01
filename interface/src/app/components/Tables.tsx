@@ -245,11 +245,9 @@ export function Tables() {
         <Grid container spacing={3}>
 
           {vipTables.map((table) => (
-
-            <Grid item xs={12} sm={6} md={4} lg={2} key={table.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2 }} key={table.id}>
               <TableCard table={table} />
             </Grid>
-
           ))}
 
         </Grid>
@@ -275,7 +273,7 @@ export function Tables() {
 
           {normalATables.map((table) => (
 
-            <Grid item xs={12} sm={6} md={4} lg={2} key={table.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2 }} key={table.id}>
               <TableCard table={table} />
             </Grid>
 
@@ -304,7 +302,7 @@ export function Tables() {
 
           {normalBTables.map((table) => (
 
-            <Grid item xs={12} sm={6} md={4} lg={2} key={table.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2 }} key={table.id}>
               <TableCard table={table} />
             </Grid>
 

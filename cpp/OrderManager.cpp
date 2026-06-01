@@ -3,14 +3,11 @@
 #include <fstream>
 #include <sstream>
 
-static string ordersFile =
-    "../database/orders.txt";
+static string ordersFile = "../database/orders.txt";
 
 static vector<string> orderStatuses;
 
-void OrderManager::loadOrders(
-    const string& filename
-) {
+void OrderManager::loadOrders(const string& filename) {
     orders.clear();
     orderStatuses.clear();
 
@@ -42,12 +39,7 @@ void OrderManager::loadOrders(
         }
 
         orders.push_back(
-            Order(
-                tableNumber,
-                foodName,
-                stoi(quantityStr),
-                stod(priceStr)
-            )
+            Order( tableNumber, foodName, stoi(quantityStr), stod(priceStr) )
         );
 
         orderStatuses.push_back(status);
@@ -56,79 +48,51 @@ void OrderManager::loadOrders(
     file.close();
 }
 
-void OrderManager::saveOrders(
-    const string& filename
-) {
+void OrderManager::saveOrders(const string& filename) {
     ofstream file(filename);
 
     for (int i = 0; i < orders.size(); i++) {
         const Order& order = orders[i];
 
-        string status =
-            i < orderStatuses.size()
-                ? orderStatuses[i]
-                : "ACTIVE";
-
-        file
-            << order.getTableNumber()
-            << ","
-            << order.getFoodName()
-            << ","
-            << order.getQuantity()
-            << ","
-            << order.getPrice()
-            << ","
-            << status
-            << endl;
+        string status = i < orderStatuses.size() ? orderStatuses[i] : "ACTIVE";
+        file << order.getTableNumber() << "," << order.getFoodName() << "," << order.getQuantity() << "," << order.getPrice() << "," << status << endl;
     }
 
     file.close();
 }
-
 vector<Order> OrderManager::getOrders() const {
     return orders;
 }
-
-vector<Order> OrderManager::getTableOrders(
-    const string& tableNumber
-) const {
+vector<Order> OrderManager::getTableOrders(const string& tableNumber) const {
     vector<Order> result;
-
     for (const Order& order : orders) {
         if (order.getTableNumber() == tableNumber) {
             result.push_back(order);
         }
     }
-
     return result;
 }
-
-void OrderManager::addOrder(
-    const Order& order
-) {
+void OrderManager::addOrder(const Order& order) {
     orders.push_back(order);
     orderStatuses.push_back("ACTIVE");
 
     saveOrders(ordersFile);
 }
 
-bool OrderManager::markTableOrdersDone(
-    const string& tableNumber
-) {
+bool OrderManager::markTableOrdersDone(const string& tableNumber) {
     bool changed = false;
 
     for (int i = 0; i < orders.size(); i++) {
         if (orders[i].getTableNumber() == tableNumber) {
             if (i >= orderStatuses.size()) {
                 orderStatuses.push_back("DONE");
-            } else {
+            } 
+            else {
                 orderStatuses[i] = "DONE";
             }
-
             changed = true;
         }
     }
-
     if (changed) {
         saveOrders(ordersFile);
     }
@@ -136,9 +100,7 @@ bool OrderManager::markTableOrdersDone(
     return changed;
 }
 
-bool OrderManager::deleteTableOrders(
-    const string& tableNumber
-) {
+bool OrderManager::deleteTableOrders(const string& tableNumber) {
     vector<Order> keptOrders;
     vector<string> keptStatuses;
 
@@ -152,11 +114,7 @@ bool OrderManager::deleteTableOrders(
 
         keptOrders.push_back(orders[i]);
 
-        keptStatuses.push_back(
-            i < orderStatuses.size()
-                ? orderStatuses[i]
-                : "ACTIVE"
-        );
+        keptStatuses.push_back( i < orderStatuses.size() ? orderStatuses[i] : "ACTIVE" );
     }
 
     orders = keptOrders;
@@ -169,41 +127,26 @@ bool OrderManager::deleteTableOrders(
     return deleted;
 }
 
-void OrderManager::clearTableOrders(
-    const string& tableNumber
-) {
+void OrderManager::clearTableOrders(const string& tableNumber) {
     deleteTableOrders(tableNumber);
 }
 
-string OrderManager::getOrderStatus(
-    const Order& order
-) const {
+string OrderManager::getOrderStatus(const Order& order) const {
     for (int i = 0; i < orders.size(); i++) {
-        if (
-            orders[i].getTableNumber() == order.getTableNumber()
-            && orders[i].getFoodName() == order.getFoodName()
-            && orders[i].getQuantity() == order.getQuantity()
-            && orders[i].getPrice() == order.getPrice()
-        ) {
-            return i < orderStatuses.size()
-                ? orderStatuses[i]
-                : "ACTIVE";
+        if ( orders[i].getTableNumber() == order.getTableNumber() && orders[i].getFoodName() == order.getFoodName() && orders[i].getQuantity() == order.getQuantity() && orders[i].getPrice() == order.getPrice() ) {
+            return i < orderStatuses.size() ? orderStatuses[i] : "ACTIVE";
         }
     }
 
     return "ACTIVE";
 }
 
-double OrderManager::calculateTableFoodTotal(
-    const string& tableNumber
-) const {
+double OrderManager::calculateTableFoodTotal(const string& tableNumber) const {
     double total = 0;
-
     for (const Order& order : orders) {
         if (order.getTableNumber() == tableNumber) {
             total += order.getTotal();
         }
     }
-
     return total;
 }

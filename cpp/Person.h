@@ -11,16 +11,10 @@ protected:
     string name;
     int age;
     string cccd;
-
 private:
     static int totalPersons;
-
 public:
-    Person(
-        string name = "",
-        int age = 0,
-        string cccd = ""
-    );
+    Person( string name = "", int age = 0, string cccd = "" );
 
     virtual ~Person();
     string getName() const;

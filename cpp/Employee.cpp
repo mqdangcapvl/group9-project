@@ -2,16 +2,8 @@
 
 int Employee::totalEmployees = 0;
 
-Employee::Employee(
-    string name,
-    int age,
-    string cccd,
-    int id
-)
-: Person(name, age, cccd)
-{
+Employee::Employee( string name, int age, string cccd, int id ) : Person(name, age, cccd) {
     this->id = id;
-
     totalEmployees++;
 }
 

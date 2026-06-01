@@ -34,7 +34,9 @@ import {
   getOrders,
   addFoodOrder,
 } from '../../api/foodApi';
-
+import {
+  getInventory,
+} from '../../api/inventoryApi';
 interface FoodItem {
   id: number;
   name: string;
@@ -75,7 +77,7 @@ export function Food() {
   const fetchData = async () => {
     try {
       const foodData =
-        await getFoods();
+        await getInventory();
 
       const orderData =
         await getOrders();
@@ -162,15 +164,21 @@ export function Food() {
       alert('Quantity must be greater than 0');
       return;
     }
-
-
+    if (orderQuantity > food.quantity) {
+      alert(`Only ${food.quantity} ${food.name} left in inventory`);
+      return;
+    }
     try {
-      await addFoodOrder({
+      const result = await addFoodOrder({
         tableNumber: selectedTable,
         name: food.name,
         quantity: orderQuantity,
         price: food.price,
       });
+
+      if (!result.success) {
+        throw new Error(result.error || 'Cannot add order');
+      }
 
       await fetchData();
 
@@ -250,7 +258,7 @@ export function Food() {
         spacing={3}
         className="mb-6"
       >
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography
@@ -263,10 +271,9 @@ export function Food() {
               <Grid container spacing={2}>
                 {categories.map(category => (
                   <Grid
-                    item
-                    xs={12}
-                    key={category}
-                  >
+                      size={12}
+                      key={category}
+                    >
                     <Typography
                       variant="subtitle2"
                       className="font-semibold text-gray-700 mb-2"
@@ -299,7 +306,7 @@ export function Food() {
                                   variant="caption"
                                   className="text-gray-600"
                                 >
-                                  ${item.price}
+                                  ${item.price} - {item.quantity} left
                                 </Typography>
                               </div>
                             </div>
@@ -313,7 +320,7 @@ export function Food() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography

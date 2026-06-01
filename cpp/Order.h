@@ -6,7 +6,6 @@
 using namespace std;
 
 class Order {
-
 private:
     string tableNumber;
     string foodName;

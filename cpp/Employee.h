@@ -13,7 +13,6 @@ protected:
     Salary* salaryPolicy;
 private:
     static int totalEmployees;
-
 public:
     Employee( string name = "", int age = 0, string cccd = "", int id = 0);
 

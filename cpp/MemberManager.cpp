@@ -3,9 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-void MemberManager::loadMembers(
-    const string& filename
-) {
+void MemberManager::loadMembers(const string& filename) {
     members.clear();
     ifstream file(filename);
     string line;
@@ -26,14 +24,7 @@ void MemberManager::loadMembers(
         getline(ss, activeStr, ',');
 
         members.push_back(
-            Member(
-                stoi(idStr),
-                name,
-                phone,
-                citizenId,
-                joinDate,
-                activeStr == "1"
-            )
+            Member( stoi(idStr), name, phone, citizenId, joinDate, activeStr == "1" )
         );
     }
     file.close();
@@ -42,16 +33,9 @@ vector<Member>
 MemberManager::getMembers() const {
     return members;
 }
-bool MemberManager::hasActiveMemberByName(
-    const string& name
-) const {
-
+bool MemberManager::hasActiveMemberByName(const string& name) const {
     for (const Member& member : members) {
-
-        if (
-            member.getName() == name &&
-            member.isActive()
-        ) {
+        if (member.getName() == name &&member.isActive()) {
             return true;
         }
     }

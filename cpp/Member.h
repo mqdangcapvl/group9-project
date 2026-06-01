@@ -14,16 +14,8 @@ private:
     string citizenId;
     string joinDate;
     bool active;
-
 public:
-    Member(
-        int id = 0,
-        string memberName = "",
-        string phoneNumber = "",
-        string citizenId = "",
-        string joinDate = "",
-        bool active = true
-    );
+    Member( int id = 0, string memberName = "", string phoneNumber = "", string citizenId = "", string joinDate = "", bool active = true);
 
     int getId() const;
     string getName() const;

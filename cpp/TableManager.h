@@ -8,7 +8,6 @@
 class TableManager {
 private:
     vector<Table*> tables;
-
 public:
     ~TableManager();
 

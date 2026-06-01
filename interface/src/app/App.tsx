@@ -122,7 +122,7 @@ export default function App() {
 
   return (
     <>
-      <ToastContainer position="top-right" richColors />
+      <ToastContainer position="top-right" theme="colored" />
       <Box className="flex h-screen">
         <AppBar
           position="fixed"
