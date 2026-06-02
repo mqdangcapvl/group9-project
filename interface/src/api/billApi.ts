@@ -36,10 +36,7 @@ async function parseResponse(response: Response) {
   return data;
 }
 
-export async function previewBill(
-  tableNumber: string,
-  memberName: string
-): Promise<BillPreview> {
+export async function previewBill(tableNumber: string,memberName: string): Promise<BillPreview> {
   const response = await fetch(
     `${API_URL}/cpp/bill/preview`,
     {
