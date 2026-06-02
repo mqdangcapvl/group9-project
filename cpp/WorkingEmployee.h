@@ -5,19 +5,20 @@
 
 #include "Employee.h"
 #include "Table.h"
+#include "TableAttendant.h"
 
-class WorkingEmployee: public Employee {
+class WorkingEmployee : public Employee, public TableAttendant {
 private:
     vector<Table*> assignedTables;
+
 public:
     WorkingEmployee();
 
-    bool assignTable(Table* table);
+    bool assignTable(Table* table) override;
 
-    int getAssignedTableCount() const;
+    int getAssignedTableCount() const override;
 
-    vector<Table*>
-    getAssignedTables() const;
+    vector<Table*> getAssignedTables() const override;
 };
 
 #endif

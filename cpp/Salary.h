@@ -6,16 +6,12 @@
 using namespace std;
 
 class Salary {
-
 public:
     virtual double calculate() const = 0;
     virtual ~Salary() {}
 };
 
-// fulltime salary
-
 class FullTimeSalary : public Salary {
-
 private:
     double salaryPerHour;
     int workedHours;
@@ -28,8 +24,6 @@ public:
     );
     double calculate() const override;
 };
-
-// parttime salary
 
 class PartTimeSalary : public Salary {
 private:
@@ -45,8 +39,6 @@ public:
     double calculate() const override;
 };
 
-// manager salary
-
 class ManagerSalary : public Salary {
 private:
     double salaryPerHour;
@@ -56,8 +48,6 @@ public:
     ManagerSalary( double salaryPerHour = 0, int workedHours = 0, double bonus = 0 );
     double calculate() const override;
 };
-
-// salary manager
 
 class SalaryManager {
 public:

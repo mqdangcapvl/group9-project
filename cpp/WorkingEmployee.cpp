@@ -1,22 +1,23 @@
 #include "WorkingEmployee.h"
 
-WorkingEmployee::WorkingEmployee() : Employee(){}
-bool WorkingEmployee::assignTable(Table* table) {
-    if (!table)
-        return false;
+WorkingEmployee::WorkingEmployee() : Employee() {}
 
-    // vip table chi duoc phuc vu boi 1 nhan vien
-    if (table->getType() == "VIP") {
-        if ( assignedTables.size() >= 1 ) {
-            return false;
-        }
+bool WorkingEmployee::assignTable(Table* table) {
+    if (!table) {
+        return false;
     }
 
-    // nhung ban thuong thi duoc phuc vu boi toi da 2 nhan vien
+    // VIP table can be handled by only one working employee.
+    if (table->getType() == "VIP") {
+        if (assignedTables.size() >= 1) {
+            return false;
+        }
+    } 
     else {
         int normalCount = 0;
-        for ( Table* t : assignedTables ) {
-            if ( t->getType() != "VIP") {
+        // Normal tables can be handled by up to two working employees.
+        for (Table* t : assignedTables) {
+            if (t->getType() != "VIP") {
                 normalCount++;
             }
         }
@@ -33,7 +34,6 @@ int WorkingEmployee::getAssignedTableCount() const {
     return assignedTables.size();
 }
 
-vector<Table*>
-WorkingEmployee::getAssignedTables() const {
+vector<Table*> WorkingEmployee::getAssignedTables() const {
     return assignedTables;
 }

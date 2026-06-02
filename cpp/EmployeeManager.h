@@ -12,7 +12,6 @@ class EmployeeManager {
 
 private:
     vector<Employee*> employees;
-
 public:
     ~EmployeeManager();
 

@@ -9,11 +9,16 @@ interface Member {
   phoneNumber: string;
   citizenId: string;
   joinDate: string;
+  joinDateText: string;
   status: 'active' | 'inactive';
 }
 
 export function Membership() {
   const [members, setMembers] = useState<Member[]>([]);
+  const [summary, setSummary] = useState({
+    totalMembers: 0,
+    activeMembers: 0,
+  });
   const [openDialog, setOpenDialog] = useState(false);
   const [newMember, setNewMember] = useState({
     name: '',
@@ -24,8 +29,13 @@ export function Membership() {
   const fetchMembers = async () => {
     try {
       const data = await getMembers();
-      setMembers(data);
 
+      setSummary(data.summary || {
+        totalMembers: 0,
+        activeMembers: 0,
+      });
+
+      setMembers(Array.isArray(data.members) ? data.members : []);
     } catch (error) {
       console.log(error);
     }
@@ -45,50 +55,32 @@ export function Membership() {
       await addMember(newMember);
       await fetchMembers();
       setOpenDialog(false);
-      setNewMember({
-        name: '',
-        phoneNumber: '',
-        citizenId: '',
-      });
-
+      setNewMember({ name: '', phoneNumber: '', citizenId: '' });
     } catch (error: any) {
-      alert(
-       error.message || 'Cannot add member'
-      );
+      alert(error.message || 'Cannot add member');
     }
   };
 
   const handleDeleteMember = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this member?')) {
-      try {
-        await deleteMember(id);
-        await fetchMembers();
+    if (!window.confirm('Are you sure you want to delete this member?')) {
+      return;
+    }
 
-      } catch (error) {
-
-        console.log(error);
-      }
+    try {
+      await deleteMember(id);
+      await fetchMembers();
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const formatDate = (dateString: string) => {
-
-    const date = new Date(dateString);
-
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   return (
-
     <div>
       <div className="flex items-center justify-between mb-6">
         <Typography variant="h4" className="font-bold">
           Membership Management
         </Typography>
+
         <Button variant="contained" startIcon={<Plus />} onClick={() => setOpenDialog(true)} className="bg-blue-600 hover:bg-blue-700">
           Add Member
         </Button>
@@ -103,12 +95,8 @@ export function Membership() {
                   <CreditCard className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <Typography variant="body2" className="text-gray-600">
-                    Total Members
-                  </Typography>
-                  <Typography variant="h5" className="font-bold">
-                    {members.length}
-                  </Typography>
+                  <Typography variant="body2" className="text-gray-600">Total Members</Typography>
+                  <Typography variant="h5" className="font-bold">{summary.totalMembers}</Typography>
                 </div>
               </div>
             </CardContent>
@@ -123,12 +111,8 @@ export function Membership() {
                   <User className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <Typography variant="body2" className="text-gray-600">
-                    Active Members
-                  </Typography>
-                  <Typography variant="h5" className="font-bold">
-                    {members.filter(m => m.status === 'active').length}
-                  </Typography>
+                  <Typography variant="body2" className="text-gray-600">Active Members</Typography>
+                  <Typography variant="h5" className="font-bold">{summary.activeMembers}</Typography>
                 </div>
               </div>
             </CardContent>
@@ -151,32 +135,18 @@ export function Membership() {
           </TableHead>
 
           <TableBody>
-            {members.map((member) => (
+            {members.map(member => (
               <TableRow key={member.id} hover>
-                <TableCell>
-                  #{member.id.toString().padStart(4, '0')}
-                </TableCell>
-                <TableCell>
-                  <strong>{member.name}</strong>
-                </TableCell>
-                <TableCell>
-                  {member.phoneNumber}
-                </TableCell>
-                <TableCell>
-                  {member.citizenId}
-                </TableCell>
-                <TableCell>
-                  {formatDate(member.joinDate)}
-                </TableCell>
+                <TableCell>#{member.id.toString().padStart(4, '0')}</TableCell>
+                <TableCell><strong>{member.name}</strong></TableCell>
+                <TableCell>{member.phoneNumber}</TableCell>
+                <TableCell>{member.citizenId}</TableCell>
+                <TableCell>{member.joinDateText || member.joinDate}</TableCell>
                 <TableCell>
                   <Chip
                     label={member.status}
                     size="small"
-                    className={
-                      member.status === 'active'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-gray-100 text-gray-700'
-                    }
+                    className={member.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}
                   />
                 </TableCell>
                 <TableCell align="center">
@@ -191,39 +161,19 @@ export function Membership() {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          Add New Member
-        </DialogTitle>
+        <DialogTitle>Add New Member</DialogTitle>
+
         <DialogContent>
           <div className="space-y-4 mt-2">
-            <TextField
-              fullWidth
-              label="Full Name"
-              value={newMember.name}
-              onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              label="Phone Number"
-              value={newMember.phoneNumber}
-              onChange={(e) => setNewMember({ ...newMember, phoneNumber: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              label="Citizen ID"
-              value={newMember.citizenId}
-              onChange={(e) => setNewMember({ ...newMember, citizenId: e.target.value })}
-            />
+            <TextField fullWidth label="Full Name" value={newMember.name} onChange={(e) => setNewMember({ ...newMember, name: e.target.value })} />
+            <TextField fullWidth label="Phone Number" value={newMember.phoneNumber} onChange={(e) => setNewMember({ ...newMember, phoneNumber: e.target.value })} />
+            <TextField fullWidth label="Citizen ID" value={newMember.citizenId} onChange={(e) => setNewMember({ ...newMember, citizenId: e.target.value })} />
           </div>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleAddMember} className="bg-blue-600 hover:bg-blue-700">
-            Add Member
-          </Button>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleAddMember} className="bg-blue-600 hover:bg-blue-700">Add Member</Button>
         </DialogActions>
       </Dialog>
     </div>

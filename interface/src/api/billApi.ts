@@ -21,6 +21,7 @@ export interface BillPreview {
 export interface BillHistoryItem extends BillPreview {
   id: number;
   paidAt: string;
+  paidAtText: string;
   memberName: string;
 }
 

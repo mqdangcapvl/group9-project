@@ -1,37 +1,25 @@
 const API_URL = 'http://localhost:5000';
 
+async function parseResponse(response: Response) {
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    throw new Error(data.error || 'Request failed');
+  }
+  return data;
+}
+
 export async function getEmployees() {
-
-  const response = await fetch(
-    `${API_URL}/cpp/employees`
-  );
-
-  return await response.json();
+  return parseResponse(await fetch(`${API_URL}/cpp/employees`));
 }
 
 export async function getSalaries() {
-
-  const response = await fetch(
-    `${API_URL}/cpp/salaries`
-  );
-
-  return await response.json();
+  return parseResponse(await fetch(`${API_URL}/cpp/salaries`));
 }
 
 export async function saveSalary(data: any) {
-
-  const response = await fetch(
-    `${API_URL}/cpp/salaries`,
-    {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(data),
-    }
-  );
-
-  return await response.json();
+  return parseResponse(await fetch(`${API_URL}/cpp/salaries`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }));
 }
