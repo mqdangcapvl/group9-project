@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, List, ListItem, ListItemText, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { Plus, UtensilsCrossed } from 'lucide-react';
+import { CheckCircle, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { addFoodOrder, getFoods, getOrders } from '../../api/foodApi';
+import { addFoodOrder, deleteOrder, getFoods, getOrders, markOrderDone } from '../../api/foodApi';
 
 interface FoodItem {
   id: number;
@@ -18,6 +18,7 @@ interface OrderItem {
   quantity: number;
   price: number;
   amount?: number;
+  status?: string;
 }
 
 interface OrderGroup {
@@ -76,6 +77,29 @@ export function Food() {
       alert(error.message || 'Cannot add order');
     }
   };
+  const handleMarkOrderDone = async (tableNumber: string) => {
+    try {
+      await markOrderDone(tableNumber);
+      await fetchData();
+      toast.success('Order marked as done');
+    } catch (error: any) {
+      alert(error.message || 'Cannot mark order as done');
+    }
+  };
+
+  const handleDeleteOrder = async (tableNumber: string) => {
+    if (!confirm(`Delete all orders for table ${tableNumber}?`)) {
+      return;
+    }
+
+    try {
+      await deleteOrder(tableNumber);
+      await fetchData();
+      toast.success('Order deleted');
+    } catch (error: any) {
+      alert(error.message || 'Cannot delete order');
+    }
+  };
 
   const categories = Array.from(new Set(menu.map(item => item.category)));
 
@@ -126,23 +150,62 @@ export function Food() {
                   <Typography variant="body2">No active orders</Typography>
                 </div>
               ) : (
-                orders.map(order => (
-                  <Card key={order.id || order.tableNumber} variant="outlined" className="mb-3">
-                    <CardContent>
-                      <Typography variant="subtitle1" className="font-semibold">{order.tableNumber}</Typography>
-                      <List dense>
-                        {(order.items || []).map((item, index) => (
-                          <ListItem key={index} className="px-0">
-                            <ListItemText primary={`${item.quantity}x ${item.name}`} secondary={`$${item.amount ?? item.price * item.quantity}`} />
-                          </ListItem>
-                        ))}
-                      </List>
-                      {order.total !== undefined && (
-                        <Typography variant="body2" className="font-semibold text-right">Total: ${order.total}</Typography>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))
+                orders.map(order => {
+                  const isDone = (order.items || []).length > 0 &&
+                    (order.items || []).every(item => item.status === 'DONE');
+
+                  return (
+                    <Card key={order.id || order.tableNumber} variant="outlined" className="mb-3">
+                      <CardContent>
+                        <div className="flex items-center justify-between gap-3">
+                          <Typography variant="subtitle1" className="font-semibold">
+                            {order.tableNumber}
+                          </Typography>
+
+                          <div className="flex gap-2">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="success"
+                              startIcon={<CheckCircle size={16} />}
+                              disabled={isDone}
+                              onClick={() => handleMarkOrderDone(order.tableNumber)}
+                            >
+                              Done
+                            </Button>
+
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="error"
+                              startIcon={<Trash2 size={16} />}
+                              onClick={() => handleDeleteOrder(order.tableNumber)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+
+                        <List dense>
+                          {(order.items || []).map((item, index) => (
+                            <ListItem key={index} className="px-0">
+                              <ListItemText
+                                primary={`${item.quantity}x ${item.name}`}
+                                secondary={`$${item.amount ?? item.price * item.quantity}${item.status ? ` - ${item.status}` : ''}`}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+
+                        {order.total !== undefined && (
+                          <Typography variant="body2" className="font-semibold text-right">
+                            Total: ${order.total}
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })
               )}
             </CardContent>
           </Card>
